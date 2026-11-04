@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Aplicación web para comprobar si un número entero es primo.">
+  <title>Verificador de números primos</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #172033;
+      background: #eef2ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at top left, #dbeafe, transparent 45%), #eef2ff;
+    }
+    main {
+      width: min(100%, 500px);
+      padding: clamp(24px, 6vw, 42px);
+      border: 1px solid #dbe3f0;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 18px 55px #283c6b1c;
+    }
+    .icon {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      border-radius: 16px;
+      background: #e0e7ff;
+      font-size: 28px;
+    }
+    h1 { margin: 20px 0 8px; font-size: clamp(1.7rem, 6vw, 2.2rem); letter-spacing: -0.04em; }
+    p { color: #596579; line-height: 1.6; }
+    label { display: block; margin: 24px 0 8px; font-weight: 650; }
+    input {
+      width: 100%;
+      min-height: 52px;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 1.05rem;
+    }
+    input:focus { outline: 3px solid #c7d2fe; border-color: #6366f1; }
+    button {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 12px;
+      background: #4f46e5;
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover { background: #4338ca; }
+    button:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 3px; }
+    #resultado {
+      min-height: 28px;
+      margin: 18px 0 0;
+      font-weight: 700;
+    }
+    #resultado.exito { color: #15803d; }
+    #resultado.info { color: #b45309; }
+    #resultado.error { color: #b91c1c; }
+    .nota { margin-top: 22px; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="icon" aria-hidden="true">🔢</div>
+    <h1>¿Es un número primo?</h1>
+    <p>Ingresa un número entero y te diremos si solo es divisible entre 1 y él mismo.</p>
+
+    <form id="formulario">
+      <label for="numero">Número entero</label>
+      <input id="numero" name="numero" type="number" step="1" required placeholder="Por ejemplo, 17">
+      <button type="submit">Comprobar</button>
+    </form>
+
+    <p id="resultado" role="status" aria-live="polite"></p>
+    <p class="nota">Un número primo es un entero mayor que 1 con exactamente dos divisores positivos.</p>
+  </main>
+
+  <script>
+    function esPrimo(numero) {
+      if (numero < 2) return false;
+      if (numero === 2) return true;
+      if (numero % 2 === 0) return false;
+
+      for (let divisor = 3; divisor * divisor <= numero; divisor += 2) {
+        if (numero % divisor === 0) return false;
+      }
+      return true;
+    }
+
+    const formulario = document.querySelector("#formulario");
+    const campoNumero = document.querySelector("#numero");
+    const resultado = document.querySelector("#resultado");
+
+    formulario.addEventListener("submit", (evento) => {
+      evento.preventDefault();
+      const texto = campoNumero.value.trim();
+      const numero = Number(texto);
+
+      if (texto === "" || !Number.isSafeInteger(numero)) {
+        resultado.textContent = "Ingresa un número entero válido y seguro.";
+        resultado.className = "error";
+        return;
+      }
+
+      if (esPrimo(numero)) {
+        resultado.textContent = `${numero} es un número primo.`;
+        resultado.className = "exito";
+      } else {
+        resultado.textContent = `${numero} no es un número primo.`;
+        resultado.className = "info";
+      }
+    });
+  </script>
+</body>
+</html>
